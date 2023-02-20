@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+
+    app:
+        build:
+            target: php_dev
+            dockerfile: ./docker/php/Dockerfile
+            args:
+                PHP_VERSION: ${PHP_VERSION:-}
+                STABILITY: ${STABILITY:-stable}
+        depends_on:
+            - db
+        restart: unless-stopped
+        volumes:
+            - php_socket:/var/run/php
+
+    nginx:
+        image: nginx:alpine
+        depends_on:
+            - app
+        restart: unless-stopped
+        ports:
+            - "${HTTP_PORT:-80}:80"
+            - "${HTTPS_PORT:-443}:443"
+        volumes:
+            - php_socket:/var/run/php
+
+    db:
+        image: postgres:${POSTGRES_VERSION:-15}-alpine
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB:-app}
+            # You should definitely change the password in production
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeMe}
+            POSTGRES_USER: ${POSTGRES_USER:-symfony}
+        volumes:
+            - ./docker/db:/var/lib/postgresql/data:rw
+
+    redis:
+        image: redis:latest
+
+volumes:
+    php_socket:

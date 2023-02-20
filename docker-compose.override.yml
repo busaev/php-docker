@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+
+    app:
+        volumes:
+            - ./:/srv/app:rw,cached
+        environment:
+            APP_ENV: dev
