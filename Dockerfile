@@ -40,7 +40,8 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 COPY docker/php/php-fpm.d/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY docker/php/php-fpm.d/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
-COPY docker/php/php-fpm.d/20_xdebug.ini  /usr/local/etc/php/conf.d/20-xdebug.ini
+COPY docker/php/php-fpm.d/10_opcache.ini  /usr/local/etc/php/conf.d/10-opcache.ini
+
 
 WORKDIR /srv/app
 
@@ -48,7 +49,7 @@ WORKDIR /srv/app
 FROM php_prod AS php_dev
 
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
-COPY docker/php/php-fpm.d/10_opcache.ini  /usr/local/etc/php/conf.d/10-opcache.ini
+COPY docker/php/php-fpm.d/20_xdebug.ini  /usr/local/etc/php/conf.d/20-xdebug.ini
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
