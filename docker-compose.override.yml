@@ -7,7 +7,25 @@ services:
             - ./:/srv/app:rw,cached
         environment:
             APP_ENV: dev
+            PHP_IDE_CONFIG: serverName=app
+            XDEBUG_SESSION: 1
 
     nginx:
         volumes:
             - ./public:/srv/app/public:ro
+
+
+    pgadmin:
+        image: dpage/pgadmin4:6.20
+        environment:
+            PGADMIN_DEFAULT_EMAIL: "user@user.ru"
+            PGADMIN_DEFAULT_PASSWORD: "user@user.ru"
+            PGADMIN_CONFIG_SERVER_MODE: "False"
+        volumes:
+            - pgadmin:/var/lib/pgadmin
+        ports:
+            - "5050:80"
+        restart: unless-stopped
+        networks:
+            - app_net
+            - default

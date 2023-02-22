@@ -5,3 +5,5 @@ services:
     app:
         build:
             target: php_prod
+        volumes:
+            - ./:/srv/app:rw,cached

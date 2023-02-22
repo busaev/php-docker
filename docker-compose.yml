@@ -6,8 +6,11 @@ services:
         build:
             target: php_dev
             dockerfile: ./Dockerfile
+        expose:
+            - "9010"
         depends_on:
             - db
+            - redis
         restart: unless-stopped
 
     nginx:
@@ -30,11 +33,28 @@ services:
         image: postgres:${POSTGRES_VERSION:-15}-alpine
         environment:
             POSTGRES_DB: ${POSTGRES_DB:-app}
-            # You should definitely change the password in production
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeMe}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-symfony}
             POSTGRES_USER: ${POSTGRES_USER:-symfony}
+        ports:
+            - "5432:5432"
         volumes:
             - ./docker/db:/var/lib/postgresql/data:rw
+        networks:
+            - app_net
 
     redis:
         image: redis:latest
+        restart: always
+        ports:
+            - '6379:6379'
+        volumes:
+            - cache:/data
+
+networks:
+    app_net:
+        driver: bridge
+volumes:
+    pgadmin:
+        driver: local
+    cache:
+        driver: local
