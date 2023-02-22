@@ -3,6 +3,7 @@
 В сборке 2 окружения dev и prod.
 
 В dev добавлен xdebug  PgAdmin
+
 В prod добавлен opcache
 
 #### Ссылки
