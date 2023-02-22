@@ -5,7 +5,6 @@ services:
     app:
         volumes:
             - ./:/srv/app:rw,cached
-#            - ./docker/php/conf.d/app.dev.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
         environment:
             APP_ENV: dev
 

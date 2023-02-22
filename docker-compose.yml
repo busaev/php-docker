@@ -9,8 +9,6 @@ services:
         depends_on:
             - db
         restart: unless-stopped
-        volumes:
-            - php_socket:/var/run/php
 
     nginx:
         image: nginx:alpine
@@ -18,14 +16,15 @@ services:
             - app
         restart: unless-stopped
         ports:
-            - "${HTTP_PORT:-80}:80"
+            - "${HTTP_PORT:-3080}:80"
             - "${HTTPS_PORT:-443}:443"
         environment:
-            SERVER_NAME: ${SERVER_NAME:-localhost}
+            NGINX_HOST: ${NGINX_HOST:-localhost}
+        command: /bin/sh -c "envsubst '$$NGINX_HOST' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
         volumes:
             - ./:/srv/app
-            - ./docker/nginx/server.conf:/etc/nginx/conf.d/default.conf
-            - php_socket:/var/run/php
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./docker/nginx/default.template.conf:/etc/nginx/conf.d/default.template
 
     db:
         image: postgres:${POSTGRES_VERSION:-15}-alpine
@@ -39,6 +38,3 @@ services:
 
     redis:
         image: redis:latest
-
-volumes:
-    php_socket:
