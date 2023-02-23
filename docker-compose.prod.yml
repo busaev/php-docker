@@ -5,5 +5,6 @@ services:
     app:
         build:
             target: php_prod
+            dockerfile: ./Dockerfile
         volumes:
             - ./:/srv/app:rw,cached

@@ -43,7 +43,8 @@ COPY docker/php/php-fpm.d/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY docker/php/php-fpm.d/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY docker/php/php-fpm.d/10_opcache.ini  /usr/local/etc/php/conf.d/10-opcache.ini
 
-
+RUN touch /env_prod
+RUN usermod -u 1000 www-data
 WORKDIR /srv/app
 
 ################
@@ -54,4 +55,5 @@ COPY docker/php/php-fpm.d/20_xdebug.ini  /usr/local/etc/php/conf.d/20-xdebug.ini
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-WORKDIR /srv/app
+RUN rm -f /env_prod && touch /env_dev
+#WORKDIR /srv/app
