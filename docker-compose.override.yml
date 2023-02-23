@@ -24,7 +24,7 @@ services:
         volumes:
             - pgadmin:/var/lib/pgadmin
         ports:
-            - "5050:80"
+            - "${PGADMIN_PORT:-5050}:80"
         restart: unless-stopped
         networks:
             - app_net
