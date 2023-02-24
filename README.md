@@ -33,7 +33,7 @@ PgAdmin - http://127.0.0.1:5050
 > make up-prod
 
 Если нет
-> docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+> docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 
 ### Остановка
 Если есть make
