@@ -12,6 +12,8 @@ ARG AMQP_VERSION=1.11.0
 ARG PHPREDIS_VERSION=5.3.7
 ARG XDEBUG_VERSION=3.2.0
 
+ARG FPM_PORT
+
 RUN apt update && apt install -y  \
     librabbitmq-dev \
     libxml2-dev \
@@ -42,6 +44,8 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 COPY docker/php/php-fpm.d/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY docker/php/php-fpm.d/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY docker/php/php-fpm.d/10_opcache.ini  /usr/local/etc/php/conf.d/10-opcache.ini
+
+RUN sed -i "s/FPM_PORT/${FPM_PORT}/g" /usr/local/etc/php-fpm.d/www.conf
 
 RUN touch /env_prod
 RUN usermod -u 1000 www-data

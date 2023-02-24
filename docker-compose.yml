@@ -6,6 +6,8 @@ services:
         build:
             target: php_dev
             dockerfile: ./Dockerfile
+            args:
+                FPM_PORT: ${FPM_PORT:-9000}
         expose:
             - "${FPM_PORT:-9000}"
         depends_on:
