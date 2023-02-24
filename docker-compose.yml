@@ -7,7 +7,7 @@ services:
             target: php_dev
             dockerfile: ./Dockerfile
         expose:
-            - "9010"
+            - "${FPM_PORT:-9000}"
         depends_on:
             - db
             - redis
@@ -25,7 +25,8 @@ services:
             - "${HTTPS_PORT:-443}:443"
         environment:
             NGINX_HOST: ${NGINX_HOST:-localhost}
-        command: /bin/sh -c "envsubst '$$NGINX_HOST' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+            FPM_PORT: ${FPM_PORT:-9000}
+        command: /bin/sh -c "envsubst '$$NGINX_HOST $$FPM_PORT' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
         volumes:
             - ./:/srv/app
             - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
