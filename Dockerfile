@@ -10,7 +10,6 @@ FROM php:${PHP_VERSION}-fpm-bullseye AS php_prod
 
 ARG AMQP_VERSION=1.11.0
 ARG PHPREDIS_VERSION=5.3.7
-ARG XDEBUG_VERSION=3.2.0
 
 ARG FPM_PORT
 
@@ -33,11 +32,10 @@ RUN apt update && apt install -y  \
     zip \
     iconv
 
-RUN mkdir -p /usr/src/php/ext/redis /usr/src/php/ext/xdebug; \
+RUN mkdir -p /usr/src/php/ext/redis; \
     wget -qO- https://github.com/phpredis/phpredis/archive/refs/tags/${PHPREDIS_VERSION}.tar.gz | tar xvz -C "/usr/src/php/ext/redis" --strip 1; \
-    wget -qO- https://github.com/xdebug/xdebug/archive/refs/tags/${XDEBUG_VERSION}.tar.gz | tar xvz -C "/usr/src/php/ext/xdebug" --strip 1; \
-    docker-php-ext-install redis xdebug \
-    && rm -f ${PHPREDIS_VERSION}.tar.gz ${XDEBUG_VERSION}.tar.gz
+    docker-php-ext-install redis \
+    && rm -f ${PHPREDIS_VERSION}.tar.gz
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
@@ -53,6 +51,13 @@ WORKDIR /srv/app
 
 ################
 FROM php_prod AS php_dev
+
+ARG XDEBUG_VERSION=3.2.0
+
+RUN mkdir -p /usr/src/php/ext/xdebug; \
+    wget -qO- https://github.com/xdebug/xdebug/archive/refs/tags/${XDEBUG_VERSION}.tar.gz | tar xvz -C "/usr/src/php/ext/xdebug" --strip 1; \
+    docker-php-ext-install xdebug \
+    && rm -f ${XDEBUG_VERSION}.tar.gz \
 
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 COPY docker/php/php-fpm.d/20_xdebug.ini  /usr/local/etc/php/conf.d/20-xdebug.ini
