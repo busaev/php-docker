@@ -12,3 +12,6 @@ sh:
 
 build:
 	docker compose build
+
+stop:
+	docker kill $(docker ps -q)
